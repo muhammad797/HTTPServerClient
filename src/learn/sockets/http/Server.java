@@ -41,14 +41,15 @@ class ClientHandler implements Runnable {
             System.out.println("Client Connected. " + socket.getInetAddress().getHostName());
             Scanner scanner = new Scanner(socket.getInputStream());
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-            String line;
-            do{
-                line = scanner.nextLine();
-                System.out.println(line);
-            } while(!line.isEmpty());
-            sendNotFoundRequest(printWriter);
+
+            RequestHandler requestHandler = new RequestHandler(scanner);
+            ResponseHandler responseHandler = new ResponseHandler(printWriter);
+
+            responseHandler.handle(requestHandler.handle());
+
             printWriter.flush();
             socket.close();
+
         } catch (SocketException e) {
             System.out.println("Client terminated");
         } catch (IOException e) {
@@ -56,24 +57,24 @@ class ClientHandler implements Runnable {
         }
     }
 
-    private String getNotFoundCode(){
+    private String getNotFoundHeader() {
         return "HTTP/1.0 404 NOT FOUND\r\n" + getDate() + getServerInfo() + getContentType();
     }
-    private String getDate(){
+    private String getDate() {
         return "Date: Thu, 09 Nov 2017 08:55:21 GMT\r\n";
     }
-    private String getServerInfo(){
+    private String getServerInfo() {
         return "Server: CrazyServer\r\n";
     }
-    private String getContentType () {
+    private String getContentType() {
         return "Content-Type: text/html; charset=UTF-8\r\n";
     }
-    private boolean sendNotFoundRequest(PrintWriter printWriter){
-        printWriter.print(getNotFoundCode());
+    private boolean sendNotFoundRequest(PrintWriter printWriter) {
+        printWriter.print(getNotFoundHeader());
         printWriter.print("\r\n");
         try {
             Scanner scanner = new Scanner(new File("404.html"));
-            while(scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 printWriter.println(line);
             }
@@ -84,6 +85,5 @@ class ClientHandler implements Runnable {
         }
         return true;
     }
-
 
 }
