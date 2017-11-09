@@ -1,5 +1,6 @@
 package learn.sockets.http;
 
+import java.io.File;
 import java.io.PrintWriter;
 
 /**
@@ -8,15 +9,22 @@ import java.io.PrintWriter;
 public class ResponseHandler {
 
     private PrintWriter printWriter;
+    private Response response;
 
     ResponseHandler(PrintWriter printWriter) {
         this.printWriter = printWriter;
+        response = new Response();
     }
 
     public void handle(RequestHandler.Request request) {
         // manage request
         // return response
-        Response response = new Response();
+        File file = new File(request.getValue("filename"));
+        if(file.exists()){
+            // 200 OK
+        } else {
+            // 404
+        }
         sendResponse(response);
     }
 

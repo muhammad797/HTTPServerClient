@@ -1,6 +1,8 @@
 package learn.sockets.http;
 
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by MuhammadAli on 11/9/2017.
@@ -9,31 +11,61 @@ import java.util.Scanner;
 class RequestHandler {
 
     private Scanner scanner;
+    private Request request;
 
     RequestHandler(Scanner scanner) {
         this.scanner = scanner;
+        this.request = new Request();
     }
 
     public Request handle() {
+
         String line;
+
+        line = scanner.nextLine();
+        String[] values = line.split(" ");
+        request.addAttribute("method", values[0]);
+        request.addAttribute("filename", values[1]);
+        request.addAttribute("HTTPVersion", values[2]);
+
         do {
             line = scanner.nextLine();
-            System.out.println(line);
+            values = line.split(":", 2);
+            if (values.length == 2){
+                request.addAttribute(values[0].trim(), values[1].trim());
+            }
         } while (!line.isEmpty());
-        Request request = new Request();
-        request.setFilename("index.html");
+
         return request;
+
     }
+
+//    public enum Keys { FILENAME, METHOD, HOST, ACCEPT_LANGUAGE, ACCEPT_ENCODING, CONNECTION};
 
     public class Request {
-        String filename;
 
-        public String filename() {
-            return filename;
+        HashMap<String, String> requestData;
+
+        Request() {
+            requestData = new HashMap<>();
         }
 
-        void setFilename(String filename) {
-            this.filename = filename;
+        boolean addAttribute(String key, String value) {
+            return !requestData.containsKey(key) && Boolean.parseBoolean(requestData.put(key, value));
         }
+
+        String getValue(String key){
+            return requestData.get(key);
+        }
+
+        public void showRequest() {
+            Set<String> keys = requestData.keySet();
+            for (String key : keys) {
+                System.out.println(key + " " + requestData.get(key));
+            }
+        }
+
     }
+
+
 }
