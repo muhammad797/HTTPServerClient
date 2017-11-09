@@ -25,6 +25,8 @@ class RequestHandler {
         line = scanner.nextLine();
         String[] values = line.split(" ");
         request.addAttribute("method", values[0]);
+        if(values[1].equals("\\")) values[1] = "index.html";
+        else values[1] = values[1].split("\\\\",2)[1];
         request.addAttribute("filename", values[1]);
         request.addAttribute("HTTPVersion", values[2]);
 
@@ -61,7 +63,7 @@ class RequestHandler {
         public void showRequest() {
             Set<String> keys = requestData.keySet();
             for (String key : keys) {
-                System.out.println(key + " " + requestData.get(key));
+                System.out.println(key + ": " + requestData.get(key));
             }
         }
 

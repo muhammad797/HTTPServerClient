@@ -11,7 +11,10 @@ import java.util.Scanner;
  */
 public class Server {
 
+    public static String ServerName = "CrazyServer/1.0";
+
     public static void main(String args[]) {
+
         System.out.println("Server has started");
         try {
             ServerSocket serverSocket = new ServerSocket(8000);
@@ -21,6 +24,7 @@ public class Server {
                 ClientHandler clientHandler = new ClientHandler(socket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
+                System.out.println("*******************************************************************");
             }
         } catch (IOException e) {
             e.printStackTrace();
