@@ -25,15 +25,18 @@ class RequestHandler {
         line = scanner.nextLine();
         String[] values = line.split(" ");
         request.addAttribute("method", values[0]);
-        if(values[1].equals("\\")) values[1] = "index.html";
-        else values[1] = values[1].split("\\\\",2)[1];
+
+        if (values[1].equals("\\")) values[1] = "index.html";
+        else if (values[1].charAt(0) == '\\')
+            values[1] = values[1].substring(1);
+
         request.addAttribute("filename", values[1]);
         request.addAttribute("HTTPVersion", values[2]);
 
         do {
             line = scanner.nextLine();
             values = line.split(":", 2);
-            if (values.length == 2){
+            if (values.length == 2) {
                 request.addAttribute(values[0].trim(), values[1].trim());
             }
         } while (!line.isEmpty());
@@ -41,8 +44,6 @@ class RequestHandler {
         return request;
 
     }
-
-//    public enum Keys { FILENAME, METHOD, HOST, ACCEPT_LANGUAGE, ACCEPT_ENCODING, CONNECTION};
 
     public class Request {
 
@@ -56,7 +57,7 @@ class RequestHandler {
             return !requestData.containsKey(key) && Boolean.parseBoolean(requestData.put(key, value));
         }
 
-        String getValue(String key){
+        String getValue(String key) {
             return requestData.get(key);
         }
 

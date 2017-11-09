@@ -1,8 +1,6 @@
 package learn.sockets.http;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -23,9 +21,34 @@ public class ResponseHandler {
     }
 
     public void handle(RequestHandler.Request request) {
-        // manage request
-        // return response
         this.request = request;
+        String method = request.getValue("method");
+        switch (method.toUpperCase()) {
+            case "GET":
+                handleGETRequest(request);
+            case "PUT":
+                handlePUTRequest(request);
+        }
+        sendResponse(response);
+    }
+
+    private void handlePUTRequest(RequestHandler.Request request) {
+        File file = new File(request.getValue("filename"));
+        if (file.exists()) {
+            response.setResponseCode("Resource already exists");
+        } else {
+            response.setResponseCode("200 OK");
+            try {
+                PrintWriter printWriter = new PrintWriter(file);
+                printWriter.print(" ");
+                printWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void handleGETRequest(RequestHandler.Request request) {
         File file = new File(request.getValue("filename"));
         response.setServerName(Server.ServerName);
 
@@ -33,7 +56,7 @@ public class ResponseHandler {
 
             response.setResponseCode("200 OK");
             try (Scanner s = new Scanner(new File("index.html"))) {
-                while(s.hasNextLine()){
+                while (s.hasNextLine()) {
                     response.appendBody(s.nextLine());
                 }
             } catch (FileNotFoundException e) {
@@ -44,7 +67,7 @@ public class ResponseHandler {
 
             response.setResponseCode("404 File not found");
             try (Scanner s = new Scanner(new File("404.html"))) {
-                while(s.hasNextLine()){
+                while (s.hasNextLine()) {
                     response.appendBody(s.nextLine());
                 }
             } catch (FileNotFoundException e) {
@@ -52,8 +75,6 @@ public class ResponseHandler {
             }
 
         }
-
-        sendResponse(response);
     }
 
     private void sendResponse(Response response) {
@@ -70,7 +91,6 @@ public class ResponseHandler {
         printWriter.print("\r\n");
 
         printWriter.print(response.getBody() + "\r\n");
-
 
     }
 

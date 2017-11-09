@@ -64,35 +64,6 @@ public class Server {
             }
         }
 
-        private String getNotFoundHeader() {
-            return "HTTP/1.0 404 NOT FOUND\r\n" + getDate() + getServerInfo() + getContentType();
-        }
-        private String getDate() {
-            return "Date: Thu, 09 Nov 2017 08:55:21 GMT\r\n";
-        }
-        private String getServerInfo() {
-            return "Server: CrazyServer\r\n";
-        }
-        private String getContentType() {
-            return "Content-Type: text/html; charset=UTF-8\r\n";
-        }
-        private boolean sendNotFoundRequest(PrintWriter printWriter) {
-            printWriter.print(getNotFoundHeader());
-            printWriter.print("\r\n");
-            try {
-                Scanner scanner = new Scanner(new File("404.html"));
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    printWriter.println(line);
-                }
-                printWriter.print("\r\n");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-
     }
 
 }
