@@ -9,9 +9,9 @@ It uses port 8000 to listen for clients.
 Client:
 You would have to provide command line arguments to run it. Like these:
 [Host,Port,Method,Filename]
->> localhost 8000 GET index.html
+> localhost 8000 GET index.html
 OR
->> 127.0.0.1 8000 GET index.html
+> 127.0.0.1 8000 GET index.html
 
 So, after compiling using javac, You can run it like:
 java Client 127.0.0.1 8000 GET index.html
